@@ -85,7 +85,7 @@ public abstract class PatternMapString<R extends ConnectRecord<R>> extends BaseT
         final String inputFieldName = inputField.name();
         final Object value = inputStruct.get(inputFieldName);
         outputStruct.put(inputFieldName, value);
-        if (inputFieldName.equals(config.srcfieldname)) {
+        if (inputFieldName.equals(config.srcfieldname) && value != null) {
           String replacedField = (String) value;
           final Matcher fieldMatcher = this.config.pattern.matcher(replacedField);
           String replacedValue = fieldMatcher.replaceAll(this.config.replacement);
@@ -109,6 +109,8 @@ public abstract class PatternMapString<R extends ConnectRecord<R>> extends BaseT
         }
         outputStruct.put(config.destfieldname, replacedValue);
         retVal = new SchemaAndValue(outPutSchema, outputStruct);
+      } else {
+        retVal = new SchemaAndValue(outPutSchema, inputStruct);
       }
     }
     return retVal;
